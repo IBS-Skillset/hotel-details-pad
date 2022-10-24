@@ -1,4 +1,4 @@
-package com.hoteldetails.pad.util;
+package com.hoteldetails.pad.mappers.roomavailability.response;
 
 import org.apache.commons.lang.StringUtils;
 

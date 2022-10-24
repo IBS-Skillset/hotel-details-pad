@@ -3,7 +3,6 @@ package com.hoteldetails.pad.mappers.roomavailability.response;
 import com.hotel.service.roomavailability.BreakFast;
 import com.hotel.service.roomavailability.Rate;
 import com.hotel.service.roomavailability.RoomDescription;
-import com.hoteldetails.pad.util.RatePlanType;
 import org.opentravel.ota._2003._05.ArrayOfPropertyAvailabilityRSHotelRatesHotel;
 import org.springframework.stereotype.Component;
 

@@ -28,7 +28,7 @@ public class RoomAvailabilityResponseMapper {
 
     public RoomAvailabilityResponse map(PropertyAvailabilityRS response) {
         RoomAvailabilityResponse.Builder responseBuilder = RoomAvailabilityResponse.newBuilder();
-        if (nonNull(response.getSuccess().getValue())) {
+        if (nonNull(response.getSuccess().getValue()) && nonNull(response.getHotelRates())) {
             ResponseStatus.Builder responseStatusBuilder = ResponseStatus.newBuilder();
             safeSetProtoField(responseStatusBuilder::setStatus, SUCCESS);
             safeSetProtoField(responseBuilder::setResponseStatus, responseStatusBuilder);

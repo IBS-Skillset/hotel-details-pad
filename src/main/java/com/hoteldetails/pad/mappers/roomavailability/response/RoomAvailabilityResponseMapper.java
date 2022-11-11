@@ -25,8 +25,8 @@ public class RoomAvailabilityResponseMapper {
 
     public RoomAvailabilityResponse map(PropertyAvailabilityRS response) {
         RoomAvailabilityResponse.Builder responseBuilder = RoomAvailabilityResponse.newBuilder();
+        ResponseStatus.Builder responseStatusBuilder = ResponseStatus.newBuilder();
         if (nonNull(response.getSuccess().getValue())) {
-            ResponseStatus.Builder responseStatusBuilder = ResponseStatus.newBuilder();
             safeSetProtoField(responseStatusBuilder::setStatus, SUCCESS);
             safeSetProtoField(responseBuilder::setResponseStatus, responseStatusBuilder);
             safeSetProtoField(responseBuilder::setHotelCode, response.getHotelRates().getHotel().get(0).getID());
@@ -35,10 +35,10 @@ public class RoomAvailabilityResponseMapper {
                     .collect(Collectors.toList());
             safeSetProtoField(responseBuilder::addAllRateList, rateList);
         } else {
-            ResponseStatus.Builder responseStatusBuilder = ResponseStatus.newBuilder();
             safeSetProtoField(responseStatusBuilder::setStatus, FAILURE);
             safeSetProtoField(responseStatusBuilder::setErrorCode, response.getErrors().getError().get(0).getCode());
             safeSetProtoField(responseStatusBuilder::setErrorMessage, response.getErrors().getError().get(0).getValue());
+            safeSetProtoField(responseBuilder::setResponseStatus, responseStatusBuilder);
         }
         return responseBuilder.build();
     }

@@ -50,6 +50,7 @@ public class DescriptionResponseMapper {
             safeSetProtoField(responseStatusBuilder::setStatus, FAILURE);
             safeSetProtoField(responseStatusBuilder::setErrorCode, response.getErrors().getError().get(0).getCode());
             safeSetProtoField(responseStatusBuilder::setErrorMessage, response.getErrors().getError().get(0).getValue());
+            safeSetProtoField(responseBuilder::setResponseStatus, responseStatusBuilder);
         }
         return responseBuilder.build();
     }

@@ -33,6 +33,7 @@ public class DescriptionResponseMapper {
 
     public HotelDescriptionResponse map(final OTAHotelDescriptiveInfoRS response) {
         HotelDescriptionResponse.Builder responseBuilder = HotelDescriptionResponse.newBuilder();
+        ResponseStatus.Builder responseStatusBuilder = ResponseStatus.newBuilder();
         if (nonNull(response.getSuccess().getValue()) && nonNull(response.getHotelDescriptiveContents())) {
             OTAHotelDescriptiveInfoRSHotelDescriptiveContentsHotelDescriptiveContent content = response.getHotelDescriptiveContents()
                     .getHotelDescriptiveContent().get(0);
@@ -42,15 +43,14 @@ public class DescriptionResponseMapper {
                 safeSetProtoField(responseBuilder::setDescriptions, descriptionsMapper.map(content.getHotelInfo().getDescriptions()));
                 safeSetProtoField(responseBuilder::setServices, servicesMapper.map(content.getHotelInfo().getServices()));
                 safeSetProtoField(responseBuilder::setHotelItem, hotelItemMapper.map(content.getContactInfos(), content.getHotelInfo().getPosition()));
-                ResponseStatus.Builder reponseStatusBuilder = ResponseStatus.newBuilder();
-                safeSetProtoField(reponseStatusBuilder::setStatus, SUCCESS);
-                safeSetProtoField(responseBuilder::setResponseStatus, reponseStatusBuilder);
+                safeSetProtoField(responseStatusBuilder::setStatus, SUCCESS);
+                safeSetProtoField(responseBuilder::setResponseStatus, responseStatusBuilder);
             }
         } else {
-            ResponseStatus.Builder reponseStatusBuilder = ResponseStatus.newBuilder();
-            safeSetProtoField(reponseStatusBuilder::setStatus, FAILURE);
-            safeSetProtoField(reponseStatusBuilder::setErrorCode, response.getErrors().getError().get(0).getCode());
-            safeSetProtoField(reponseStatusBuilder::setErrorMessage, response.getErrors().getError().get(0).getValue());
+            safeSetProtoField(responseStatusBuilder::setStatus, FAILURE);
+            safeSetProtoField(responseStatusBuilder::setErrorCode, response.getErrors().getError().get(0).getCode());
+            safeSetProtoField(responseStatusBuilder::setErrorMessage, response.getErrors().getError().get(0).getValue());
+            safeSetProtoField(responseBuilder::setResponseStatus, responseStatusBuilder);
         }
         return responseBuilder.build();
     }

@@ -2,13 +2,13 @@ package com.hoteldetails.pad.mappers.hoteldescription.response;
 
 import com.hotel.service.common.ResponseStatus;
 import com.hotel.service.description.HotelDescriptionResponse;
+import com.hoteldetails.pad.mappers.common.response.ErrorResponseMapper;
 import org.opentravel.ota._2003._05.OTAHotelDescriptiveInfoRS;
 import org.opentravel.ota._2003._05.OTAHotelDescriptiveInfoRSHotelDescriptiveContentsHotelDescriptiveContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static com.hotel.service.util.ProtoBufUtil.safeSetProtoField;
-import static com.hoteldetails.pad.util.ApiConstants.FAILURE;
 import static com.hoteldetails.pad.util.ApiConstants.SUCCESS;
 import static java.util.Objects.nonNull;
 
@@ -30,10 +30,12 @@ public class DescriptionResponseMapper {
     @Autowired
     private ServicesMapper servicesMapper;
 
+    @Autowired
+    private ErrorResponseMapper errorResponseMapper;
+
 
     public HotelDescriptionResponse map(final OTAHotelDescriptiveInfoRS response) {
         HotelDescriptionResponse.Builder responseBuilder = HotelDescriptionResponse.newBuilder();
-        ResponseStatus.Builder responseStatusBuilder = ResponseStatus.newBuilder();
         if (nonNull(response.getSuccess().getValue()) && nonNull(response.getHotelDescriptiveContents())) {
             OTAHotelDescriptiveInfoRSHotelDescriptiveContentsHotelDescriptiveContent content = response.getHotelDescriptiveContents()
                     .getHotelDescriptiveContent().get(0);
@@ -43,14 +45,14 @@ public class DescriptionResponseMapper {
                 safeSetProtoField(responseBuilder::setDescriptions, descriptionsMapper.map(content.getHotelInfo().getDescriptions()));
                 safeSetProtoField(responseBuilder::setServices, servicesMapper.map(content.getHotelInfo().getServices()));
                 safeSetProtoField(responseBuilder::setHotelItem, hotelItemMapper.map(content.getContactInfos(), content.getHotelInfo().getPosition()));
+                ResponseStatus.Builder responseStatusBuilder = ResponseStatus.newBuilder();
                 safeSetProtoField(responseStatusBuilder::setStatus, SUCCESS);
                 safeSetProtoField(responseBuilder::setResponseStatus, responseStatusBuilder);
             }
         } else {
-            safeSetProtoField(responseStatusBuilder::setStatus, FAILURE);
-            safeSetProtoField(responseStatusBuilder::setErrorCode, response.getErrors().getError().get(0).getCode());
-            safeSetProtoField(responseStatusBuilder::setErrorMessage, response.getErrors().getError().get(0).getValue());
-            safeSetProtoField(responseBuilder::setResponseStatus, responseStatusBuilder);
+            safeSetProtoField(responseBuilder::setResponseStatus,
+                    errorResponseMapper.mapErrorResponse(response.getErrors().getError().get(0).getCode(),
+                    response.getErrors().getError().get(0).getValue()));
         }
         return responseBuilder.build();
     }

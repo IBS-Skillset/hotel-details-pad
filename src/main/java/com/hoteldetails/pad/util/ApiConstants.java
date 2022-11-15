@@ -8,5 +8,6 @@ public final class ApiConstants {
     public static final int SUCCESS = 1;
     public static final int FAILURE = 0;
     public static final String TYPE = "1";
+    public static  final String SUPPLIER_SERVER_ERROR = "999";
 
 }

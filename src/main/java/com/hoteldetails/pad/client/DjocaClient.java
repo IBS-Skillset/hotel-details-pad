@@ -1,11 +1,9 @@
 package com.hoteldetails.pad.client;
 
-import com.hotel.service.availability.HotelAvailabilityRequest;
-import com.hotel.service.description.HotelDescriptionRequest;
 import com.hoteldetails.pad.endpoint.DjocaEndpointFactory;
+import com.hoteldetails.pad.exception.HotelException;
+import com.hoteldetails.pad.util.ApiConstants;
 import lombok.extern.slf4j.Slf4j;
-import org.opentravel.ota._2003._05.OTAHotelAvailRQ;
-import org.opentravel.ota._2003._05.OTAHotelDescriptiveInfoRQ;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -39,13 +37,13 @@ public class DjocaClient {
             return unmarshaller.unmarshal(new StringReader(responseEntity.getBody()));
         }
         catch (JAXBException b){
-            log.info("JAXBException caught" +b);
-            throw b;
+            log.info("JAXBException caught " + b);
+            throw new HotelException(b.getMessage(), ApiConstants.SUPPLIER_SERVER_ERROR);
         }
         catch (Exception e)
         {
-            log.info("Exception occured in request-response to Djoca" +e);
-            throw e;
+            log.info("Exception occured in request-response to Djoca " + e);
+            throw new HotelException(e.getMessage(), ApiConstants.SUPPLIER_SERVER_ERROR);
         }
     }
 

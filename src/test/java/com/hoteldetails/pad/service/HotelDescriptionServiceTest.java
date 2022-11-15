@@ -3,13 +3,15 @@ package com.hoteldetails.pad.service;
 import com.hotel.service.description.HotelDescriptionRequest;
 import com.hotel.service.description.HotelDescriptionResponse;
 import com.hoteldetails.pad.client.DjocaClient;
+import com.hoteldetails.pad.exception.HotelException;
 import com.hoteldetails.pad.mappers.hoteldescription.request.DescriptionRequestMapper;
 import com.hoteldetails.pad.mappers.hoteldescription.response.DescriptionResponseMapper;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opentravel.ota._2003._05.OTAHotelDescriptiveInfoRQ;
 import org.opentravel.ota._2003._05.OTAHotelDescriptiveInfoRS;
 import javax.xml.bind.JAXBException;
@@ -18,7 +20,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.atLeast;
 
-@ExtendWith(MockitoExtension.class)
+@RunWith(MockitoJUnitRunner.class)
 public class HotelDescriptionServiceTest {
     private String SERVICE = "hotel-descriptive-info";
     @Mock
@@ -47,7 +49,7 @@ public class HotelDescriptionServiceTest {
         verify(descriptionResponseMapper, atLeast(1)).map(hotelDescriptiveInfoRS);
     }
 
-    @Test
+    @Test(expected = HotelException.class)
     public void getHotelDescriptionFromSupplierError() throws JAXBException {
         OTAHotelDescriptiveInfoRQ hotelDescriptiveInfoRQ = new OTAHotelDescriptiveInfoRQ();
         HotelDescriptionRequest request = getRequest();

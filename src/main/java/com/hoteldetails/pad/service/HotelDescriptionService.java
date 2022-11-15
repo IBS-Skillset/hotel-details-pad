@@ -4,8 +4,10 @@ import com.hotel.service.description.HotelDescriptionRequest;
 import com.hotel.service.description.HotelDescriptionResponse;
 import com.hoteldetails.pad.client.DjocaClient;
 
+import com.hoteldetails.pad.exception.HotelException;
 import com.hoteldetails.pad.mappers.hoteldescription.request.DescriptionRequestMapper;
 import com.hoteldetails.pad.mappers.hoteldescription.response.DescriptionResponseMapper;
+import com.hoteldetails.pad.util.ApiConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.opentravel.ota._2003._05.OTAHotelDescriptiveInfoRQ;
 import org.opentravel.ota._2003._05.OTAHotelDescriptiveInfoRS;
@@ -41,7 +43,7 @@ public class HotelDescriptionService {
             return descriptionResponseMapper.map(descriptiveInfoRS);
         } catch (Exception e) {
             log.info("Error while retrieving the HotelAvail Response" + e);
+            throw new HotelException(e.getMessage(), ApiConstants.SUPPLIER_SERVER_ERROR);
         }
-        return null;
     }
 }

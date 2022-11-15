@@ -1,11 +1,13 @@
 package com.hoteldetails.pad.mappers.hoteldescription.response;
 
 import com.hotel.service.common.AvailableHotelItem;
+import com.hotel.service.common.ResponseStatus;
 import com.hotel.service.description.HotelDescriptionResponse;
 import com.hotel.service.description.Media;
 import com.hotel.service.description.SafetyInfos;
 import com.hotel.service.description.Descriptions;
 import com.hotel.service.description.Services;
+import com.hoteldetails.pad.mappers.common.response.ErrorResponseMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +27,7 @@ import org.opentravel.ota._2003._05.SuccessType;
 import org.opentravel.ota._2003._05.ErrorsType;
 import org.opentravel.ota._2003._05.ErrorType;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.atLeast;
@@ -41,6 +44,8 @@ public class DescriptionResponseMapperTest {
     DescriptionsMapper descriptionsMapper;
     @Mock
     ServicesMapper servicesMapper;
+    @Mock
+    ErrorResponseMapper errorResponseMapper;
     @InjectMocks
     DescriptionResponseMapper descriptionResponseMapper;
 
@@ -86,10 +91,11 @@ public class DescriptionResponseMapperTest {
         error.setValue("room not available");
         errors.getError().add(error);
         response.setErrors(errors);
+        ResponseStatus.Builder responseSatus = ResponseStatus.newBuilder();
+        when(errorResponseMapper.mapErrorResponse(anyString(),anyString())).thenReturn(responseSatus.build());
         HotelDescriptionResponse hotelDescriptionResponse = descriptionResponseMapper.map(response);
         assertThat(hotelDescriptionResponse).isNotNull();
-        assertThat(response.getSuccess().getValue()).isEqualTo("FAILURE");
-        assertThat(response.getErrors().getError().get(0).getCode()).isEqualTo("1234");
+
     }
 
     private OTAHotelDescriptiveInfoRS getDescriptiveInfos() {

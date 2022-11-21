@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.opentravel.ota._2003._05.ArrayOfPropertyAvailabilityRSHotelRatesHotel;
 import org.opentravel.ota._2003._05.TPAExtensionsType;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
@@ -20,6 +19,17 @@ class RateMapperTest {
         ArrayOfPropertyAvailabilityRSHotelRatesHotel.Hotel.BookingChannel.RatePlan ratePlan = getRate();
         Rate rate = rateMapper.map(ratePlan);
         assertThat(rate).isNotNull();
+        assertThat(rate.getAmount()).isEqualTo(1234.0);
+        assertThat(rate.getTotalAmount()).isEqualTo(1234.0);
+        assertThat(rate.getCurrency()).isEqualTo("EUR");
+        assertThat(rate.getAvailable()).isEqualTo("Rooms Available");
+        assertThat(rate.getRateType()).isEqualTo("A");
+        assertThat(rate.getRatePlan()).isEqualTo("1001");
+        assertThat(rate.getBookingCode()).isEqualTo("1001");
+        assertThat(rate.getBreakFastDetails(0).getBreakfast()).isEqualTo("Breakfast details");
+        assertThat(rate.getRateCategory()).isEqualTo("Rate Description");
+        assertThat(rate.getRoomDescriptionList(0).getDescription()).isEqualTo("room rate description");
+        assertThat(rate.getIsBreakfastIncluded()).isEqualTo("BreakFast Included");
     }
 
     private ArrayOfPropertyAvailabilityRSHotelRatesHotel.Hotel.BookingChannel.RatePlan getRate() {
@@ -34,17 +44,20 @@ class RateMapperTest {
         ArrayOfPropertyAvailabilityRSHotelRatesHotel.Hotel.BookingChannel.RatePlan.RatePerDay ratePerDay =
                 new ArrayOfPropertyAvailabilityRSHotelRatesHotel.Hotel.BookingChannel.RatePlan.RatePerDay();
         ratePerDay.setAmount("1234");
+        ratePerDay.setCurrencyCode("EUR");
         ratePlan.setRatePerDay(ratePerDay);
         ArrayOfPropertyAvailabilityRSHotelRatesHotel.Hotel.BookingChannel.RatePlan.TotalAmount totalAmount =
                 new ArrayOfPropertyAvailabilityRSHotelRatesHotel.Hotel.BookingChannel.RatePlan.TotalAmount();
         totalAmount.setAmount("1234");
         ratePlan.setTotalAmount(totalAmount);
-
         ratePlan.setRoomsAvailable("Rooms Available");
-        ratePlan.setRateTypeCode("Rate type code");
+        ratePlan.setID("1001");
+        rateDetails.setBreakfast("Breakfast details");
         ratePlan.setRateDetails(rateDetails);
+        ratePlan.setRatePlanType(10);
+        ratePlan.setRoomRateDescription("room rate description");
         TPAExtensionsType tpaExtensionsType = new TPAExtensionsType();
-        tpaExtensionsType.setBreakfastIncluded("BreakFast Included ");
+        tpaExtensionsType.setBreakfastIncluded("BreakFast Included");
         ratePlan.setTPAExtensions(tpaExtensionsType);
         return ratePlan;
     }

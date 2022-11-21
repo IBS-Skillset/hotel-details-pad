@@ -26,6 +26,7 @@ import org.opentravel.ota._2003._05.ArrayOfContactInfoRootType;
 import org.opentravel.ota._2003._05.SuccessType;
 import org.opentravel.ota._2003._05.ErrorsType;
 import org.opentravel.ota._2003._05.ErrorType;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -92,10 +93,12 @@ public class DescriptionResponseMapperTest {
         errors.getError().add(error);
         response.setErrors(errors);
         ResponseStatus.Builder responseSatus = ResponseStatus.newBuilder();
-        when(errorResponseMapper.mapErrorResponse(anyString(),anyString())).thenReturn(responseSatus.build());
+        when(errorResponseMapper.mapErrorResponse(response.getErrors().getError().get(0).getCode(),
+                response.getErrors().getError().get(0).getValue())).thenReturn(responseSatus.build());
         HotelDescriptionResponse hotelDescriptionResponse = descriptionResponseMapper.map(response);
         assertThat(hotelDescriptionResponse).isNotNull();
-
+        verify(errorResponseMapper, atLeast(1)).mapErrorResponse(response.getErrors().getError().get(0).getCode(),
+                response.getErrors().getError().get(0).getValue());
     }
 
     private OTAHotelDescriptiveInfoRS getDescriptiveInfos() {

@@ -3,25 +3,26 @@ package com.hoteldetails.pad.service;
 import com.hotel.service.roomavailability.RoomAvailabilityRequest;
 import com.hotel.service.roomavailability.RoomAvailabilityResponse;
 import com.hoteldetails.pad.client.DjocaClient;
+import com.hoteldetails.pad.exception.HotelException;
 import com.hoteldetails.pad.mappers.roomavailability.request.RoomAvailabilityRequestMapper;
 import com.hoteldetails.pad.mappers.roomavailability.response.RoomAvailabilityResponseMapper;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opentravel.ota._2003._05.PropertyAvailabilityRQ;
 import org.opentravel.ota._2003._05.PropertyAvailabilityRS;
 import javax.xml.bind.JAXBException;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.lenient;
+import static com.hoteldetails.pad.util.ApiConstants.ROOMSERVICE;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.atLeast;
 
-@ExtendWith(MockitoExtension.class)
-class RoomAvailabilityServiceTest {
+@RunWith(MockitoJUnitRunner.class)
+public class RoomAvailabilityServiceTest {
     private String SERVICE = "property-availability";
-
     @Mock
     private DjocaClient djocaClient;
     @InjectMocks
@@ -33,21 +34,36 @@ class RoomAvailabilityServiceTest {
     RoomAvailabilityRequestMapper roomAvailabilityRequestMapper;
 
     @Test
-    void getRoomAvailabilityFromSupplier() {
-        PropertyAvailabilityRQ propertyAvailabilityRQ =new PropertyAvailabilityRQ();
-        PropertyAvailabilityRS propertyAvailabilityRS=new PropertyAvailabilityRS();
+   public void getRoomAvailabilityFromSupplier()throws JAXBException {
+        PropertyAvailabilityRQ propertyAvailabilityRQ = new PropertyAvailabilityRQ();
+        PropertyAvailabilityRS propertyAvailabilityRS = new PropertyAvailabilityRS();
+        RoomAvailabilityRequest request = getRequest();
+        RoomAvailabilityResponse.Builder responseBuilder = RoomAvailabilityResponse.newBuilder();
+        when(roomAvailabilityRequestMapper.map(request)).thenReturn(propertyAvailabilityRQ);
+        when(djocaClient.restClient(propertyAvailabilityRQ, request.getRequestContext().getSupplierUrl(), ROOMSERVICE)).thenReturn(propertyAvailabilityRS);
+        when(roomAvailabilityResponseMapper.map(propertyAvailabilityRS)).thenReturn(responseBuilder.build());
+        RoomAvailabilityResponse response = roomAvailabilityService.getRoomAvailabilityFromSupplier(request);
+        assertThat(response).isNotNull();
+        assertThat(response).isEqualTo(RoomAvailabilityResponse.newBuilder().build());
+        verify(roomAvailabilityRequestMapper, atLeast(1)).map(request);
+        verify(djocaClient, atLeast(1)).restClient(propertyAvailabilityRQ, request.getRequestContext().getSupplierUrl(), ROOMSERVICE);
+        verify(roomAvailabilityResponseMapper, atLeast(1)).map(propertyAvailabilityRS);
+    }
 
+    @Test(expected = HotelException.class)
+    public void getHotelDescriptionFromSupplierError() throws JAXBException {
+        PropertyAvailabilityRQ propertyAvailabilityRQ = new PropertyAvailabilityRQ();
+        RoomAvailabilityRequest request = getRequest();
+        when(roomAvailabilityRequestMapper.map(request)).thenReturn(propertyAvailabilityRQ);
+        when(djocaClient.restClient(propertyAvailabilityRQ, request.getRequestContext().getSupplierUrl(), ROOMSERVICE)).thenReturn(JAXBException.class);
+        RoomAvailabilityResponse response = roomAvailabilityService.getRoomAvailabilityFromSupplier(request);
+        assertThat(response).isNull();
+        verify(roomAvailabilityRequestMapper, atLeast(1)).map(request);
+        verify(djocaClient, atLeast(1)).restClient(propertyAvailabilityRQ, request.getRequestContext().getSupplierUrl(), ROOMSERVICE);
+    }
+    private  RoomAvailabilityRequest getRequest(){
         RoomAvailabilityRequest request = RoomAvailabilityRequest.newBuilder().build();
-        when(roomAvailabilityRequestMapper.map(any())).thenReturn(mock(PropertyAvailabilityRQ.class));
-        try {
-            lenient().when(djocaClient.restClient(propertyAvailabilityRQ,request.getRequestContext().getSupplierUrl(),SERVICE)).thenReturn(propertyAvailabilityRS);
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
-        lenient().when(roomAvailabilityResponseMapper.map(propertyAvailabilityRS)).thenReturn(RoomAvailabilityResponse.newBuilder().build());
-        RoomAvailabilityResponse response =roomAvailabilityService.getRoomAvailabilityFromSupplier(request);
-        Assertions.assertThat(response).isNull();
-
+        return request;
     }
 }
 

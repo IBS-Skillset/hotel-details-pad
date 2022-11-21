@@ -1,22 +1,30 @@
 package com.hoteldetails.pad.mappers.roomavailability.response;
 
-
+import com.hotel.service.common.ResponseStatus;
 import com.hotel.service.roomavailability.Rate;
 import com.hotel.service.roomavailability.RoomAvailabilityResponse;
+import com.hoteldetails.pad.mappers.common.response.ErrorResponseMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.opentravel.ota._2003._05.*;
-
+import org.opentravel.ota._2003._05.ErrorsType;
+import org.opentravel.ota._2003._05.PropertyAvailabilityRS;
+import org.opentravel.ota._2003._05.SuccessType;
+import org.opentravel.ota._2003._05.ErrorType;
+import org.opentravel.ota._2003._05.ArrayOfPropertyAvailabilityRSHotelRatesHotel;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.atLeast;
 
 @ExtendWith(MockitoExtension.class)
 class RoomAvailabilityResponseMapperTest {
     @Mock
     RateMapper rateMapper;
+    @Mock
+    ErrorResponseMapper errorResponseMapper;
     @InjectMocks
     RoomAvailabilityResponseMapper roomAvailabilityResponseMapper;
 
@@ -46,11 +54,15 @@ class RoomAvailabilityResponseMapperTest {
         error.setValue("room not available");
         errors.getError().add(error);
         response.setErrors(errors);
+        ResponseStatus.Builder responseSatus = ResponseStatus.newBuilder();
+        when(errorResponseMapper.mapErrorResponse(response.getErrors().getError().get(0).getCode(),
+                response.getErrors().getError().get(0).getValue())).thenReturn(responseSatus.build());
         RoomAvailabilityResponse roomAvailabilityResponse = roomAvailabilityResponseMapper.map(response);
         assertThat(roomAvailabilityResponse).isNotNull();
         assertThat(response.getSuccess().getValue()).isEqualTo("FAILURE");
         assertThat(response.getErrors().getError().get(0).getCode()).isEqualTo("1234");
-
+        verify(errorResponseMapper,atLeast(1)).mapErrorResponse(response.getErrors().getError().get(0).getCode(),
+                response.getErrors().getError().get(0).getValue());
     }
 
     private PropertyAvailabilityRS getResponse() {
@@ -66,8 +78,6 @@ class RoomAvailabilityResponseMapperTest {
         hotel.getBookingChannel().add(bookingChannel);
         hotelRatesHotel.getHotel().add(hotel);
         response.setHotelRates(hotelRatesHotel);
-
         return response;
     }
-
 }

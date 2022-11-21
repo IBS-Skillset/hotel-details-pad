@@ -20,7 +20,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @Component
 public class HotelItemMapper {
 
-    public AvailableHotelItem map(ArrayOfContactInfoRootType contactInfo, HotelInfoTypePosition position) {
+    public AvailableHotelItem.Builder map(ArrayOfContactInfoRootType contactInfo, HotelInfoTypePosition position) {
         AvailableHotelItem.Builder hotelItem = AvailableHotelItem.newBuilder();
         if (nonNull(position)) {
             safeSetProtoField(hotelItem::setLongitude, Double.parseDouble(position.getLongitude()));
@@ -46,6 +46,6 @@ public class HotelItemMapper {
             safeSetProtoField(hotelItem::setAddress, addressBuilder);
         }
 
-        return hotelItem.build();
+        return hotelItem;
     }
 }

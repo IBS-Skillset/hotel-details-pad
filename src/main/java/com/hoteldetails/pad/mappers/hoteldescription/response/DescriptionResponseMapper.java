@@ -1,5 +1,6 @@
 package com.hoteldetails.pad.mappers.hoteldescription.response;
 
+import com.hotel.service.common.AvailableHotelItem;
 import com.hotel.service.common.ResponseStatus;
 import com.hotel.service.description.HotelDescriptionResponse;
 import com.hoteldetails.pad.mappers.common.response.ErrorResponseMapper;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import static com.hotel.service.util.ProtoBufUtil.safeSetProtoField;
 import static com.hoteldetails.pad.util.ApiConstants.SUCCESS;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 @Component
 public class DescriptionResponseMapper {
@@ -44,7 +46,11 @@ public class DescriptionResponseMapper {
                 safeSetProtoField(responseBuilder::setSafetyInfo, safetyInfosMapper.map(content.getHotelInfo().getSafetyInfo()));
                 safeSetProtoField(responseBuilder::setDescriptions, descriptionsMapper.map(content.getHotelInfo().getDescriptions()));
                 safeSetProtoField(responseBuilder::setServices, servicesMapper.map(content.getHotelInfo().getServices()));
-                safeSetProtoField(responseBuilder::setHotelItem, hotelItemMapper.map(content.getContactInfos(), content.getHotelInfo().getPosition()));
+                AvailableHotelItem.Builder hotelItem = hotelItemMapper.map(content.getContactInfos(), content.getHotelInfo().getPosition());
+                if (isNotEmpty(response.getHotelDescriptiveContents().getHotelName())) {
+                    safeSetProtoField(hotelItem::setHotelName, response.getHotelDescriptiveContents().getHotelName());
+                }
+                safeSetProtoField(responseBuilder:: setHotelItem, hotelItem.build());
                 ResponseStatus.Builder responseStatusBuilder = ResponseStatus.newBuilder();
                 safeSetProtoField(responseStatusBuilder::setStatus, SUCCESS);
                 safeSetProtoField(responseBuilder::setResponseStatus, responseStatusBuilder);

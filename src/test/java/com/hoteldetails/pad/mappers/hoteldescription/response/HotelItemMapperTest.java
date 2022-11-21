@@ -24,7 +24,7 @@ public class HotelItemMapperTest {
     public void map() {
         ArrayOfContactInfoRootType contactInfo = getContactInfo();
         HotelInfoTypePosition position = getHotelInfoPosition();
-        AvailableHotelItem response = hotelItemMapper.map(contactInfo, position);
+        AvailableHotelItem.Builder response = hotelItemMapper.map(contactInfo, position);
         assertThat(response).isNotNull();
         assertThat(response.getLongitude()).isEqualTo(1234.0);
         assertThat(response.getLatitude()).isEqualTo(1234.0);

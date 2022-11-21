@@ -58,7 +58,7 @@ public class DescriptionResponseMapperTest {
         SafetyInfos safetyInfos = SafetyInfos.newBuilder().addSafetyInfo("fire Safety").build();
         Descriptions descriptions = Descriptions.newBuilder().addDecription("hotel Description").build();
         Services service = Services.newBuilder().addService("free Wifi").build();
-        AvailableHotelItem hotelItem = AvailableHotelItem.newBuilder().setLatitude(1274.345).build();
+        AvailableHotelItem.Builder hotelItem = AvailableHotelItem.newBuilder().setLatitude(1274.345);
         when(mediaMapper.map(response.getHotelDescriptiveContents().getHotelDescriptiveContent().get(0).getMultimediaDescriptions())).thenReturn(media);
         when(safetyInfosMapper.map(response.getHotelDescriptiveContents().getHotelDescriptiveContent().get(0).getHotelInfo().getSafetyInfo())).thenReturn(safetyInfos);
         when(descriptionsMapper.map(response.getHotelDescriptiveContents().getHotelDescriptiveContent().get(0).getHotelInfo().getDescriptions())).thenReturn(descriptions);
@@ -72,6 +72,7 @@ public class DescriptionResponseMapperTest {
         assertThat(hotelDescriptionResponse.getDescriptions().getDecription(0)).isEqualTo("hotel Description");
         assertThat(hotelDescriptionResponse.getServices().getService(0)).isEqualTo("free Wifi");
         assertThat(hotelDescriptionResponse.getHotelItem().getLatitude()).isEqualTo(1274.345);
+        assertThat(hotelDescriptionResponse.getHotelItem().getHotelName()).isEqualTo("ABC");
         verify(mediaMapper, atLeast(1)).map(response.getHotelDescriptiveContents().getHotelDescriptiveContent().get(0).getMultimediaDescriptions());
         verify(safetyInfosMapper, atLeast(1)).map(response.getHotelDescriptiveContents().getHotelDescriptiveContent().get(0).getHotelInfo().getSafetyInfo());
         verify(descriptionsMapper, atLeast(1)).map(response.getHotelDescriptiveContents().getHotelDescriptiveContent().get(0).getHotelInfo().getDescriptions());
@@ -107,6 +108,7 @@ public class DescriptionResponseMapperTest {
         success.setValue("SUCCESS");
         response.setSuccess(success);
         OTAHotelDescriptiveInfoRSHotelDescriptiveContents hotelDescriptiveContents = new OTAHotelDescriptiveInfoRSHotelDescriptiveContents();
+        hotelDescriptiveContents.setHotelName("ABC");
         OTAHotelDescriptiveInfoRSHotelDescriptiveContentsHotelDescriptiveContent hotelDescriptiveContent = new OTAHotelDescriptiveInfoRSHotelDescriptiveContentsHotelDescriptiveContent();
         MultimediaDescriptionsType multimedia = new MultimediaDescriptionsType();
         hotelDescriptiveContent.setMultimediaDescriptions(multimedia);

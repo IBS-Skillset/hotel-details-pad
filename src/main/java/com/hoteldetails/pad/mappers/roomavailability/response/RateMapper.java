@@ -7,6 +7,7 @@ import org.opentravel.ota._2003._05.ArrayOfPropertyAvailabilityRSHotelRatesHotel
 import org.springframework.stereotype.Component;
 
 import static com.hotel.service.util.ProtoBufUtil.safeSetProtoField;
+import static com.hoteldetails.pad.util.ApiConstants.FALSE;
 import static java.util.Objects.nonNull;
 
 
@@ -33,6 +34,7 @@ public class RateMapper {
             safeSetProtoField(roomDescription::setDescription, ratePlan.getRoomRateDescription());
             safeSetProtoField(rateBuilder::addRoomDescriptionList, roomDescription.build());
             safeSetProtoField(rateBuilder::setIsBreakfastIncluded, ratePlan.getTPAExtensions().getBreakfastIncluded());
+            safeSetProtoField(rateBuilder::setIscancellable, ratePlan.getTPAExtensions().getNonRefundable().equals(FALSE));
 
         }
         return rateBuilder.build();

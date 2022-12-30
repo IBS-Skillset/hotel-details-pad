@@ -10,5 +10,6 @@ public final class ApiConstants {
     public static final String TYPE = "1";
     public static  final String SUPPLIER_SERVER_ERROR = "999";
     public static final String FALSE = "false";
+    public static final String TRUE = "true";
 
 }

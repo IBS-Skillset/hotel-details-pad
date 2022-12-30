@@ -7,8 +7,10 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.opentravel.ota._2003._05.ArrayOfPropertyAvailabilityRSHotelRatesHotel;
 import org.opentravel.ota._2003._05.TPAExtensionsType;
+
+import static com.hoteldetails.pad.util.ApiConstants.FALSE;
+import static com.hoteldetails.pad.util.ApiConstants.TRUE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 @ExtendWith(MockitoExtension.class)
 class RateMapperTest {
@@ -30,8 +32,8 @@ class RateMapperTest {
         assertThat(rate.getBreakFastDetails(0).getBreakfast()).isEqualTo("Breakfast details");
         assertThat(rate.getRateCategory()).isEqualTo("Rate Description");
         assertThat(rate.getRoomDescriptionList(0).getDescription()).isEqualTo("room rate description");
-        assertThat(rate.getIsBreakfastIncluded()).isEqualTo("BreakFast Included");
-        assertThat(rate.getIscancellable()).isEqualTo(true);
+        assertThat(rate.getIsBreakfastIncluded()).isTrue();
+        assertThat(rate.getIsCancellable()).isEqualTo(true);
     }
 
     private ArrayOfPropertyAvailabilityRSHotelRatesHotel.Hotel.BookingChannel.RatePlan getRate() {
@@ -59,8 +61,8 @@ class RateMapperTest {
         ratePlan.setRatePlanType(10);
         ratePlan.setRoomRateDescription("room rate description");
         TPAExtensionsType tpaExtensionsType = new TPAExtensionsType();
-        tpaExtensionsType.setBreakfastIncluded("BreakFast Included");
-        tpaExtensionsType.setNonRefundable("false");
+        tpaExtensionsType.setBreakfastIncluded(TRUE);
+        tpaExtensionsType.setNonRefundable(FALSE);
         ratePlan.setTPAExtensions(tpaExtensionsType);
         return ratePlan;
     }

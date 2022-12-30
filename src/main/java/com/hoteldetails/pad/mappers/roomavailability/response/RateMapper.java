@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import static com.hotel.service.util.ProtoBufUtil.safeSetProtoField;
 import static com.hoteldetails.pad.util.ApiConstants.FALSE;
+import static com.hoteldetails.pad.util.ApiConstants.TRUE;
 import static java.util.Objects.nonNull;
 
 
@@ -33,8 +34,8 @@ public class RateMapper {
             RoomDescription.Builder roomDescription = RoomDescription.newBuilder();
             safeSetProtoField(roomDescription::setDescription, ratePlan.getRoomRateDescription());
             safeSetProtoField(rateBuilder::addRoomDescriptionList, roomDescription.build());
-            safeSetProtoField(rateBuilder::setIsBreakfastIncluded, ratePlan.getTPAExtensions().getBreakfastIncluded());
-            safeSetProtoField(rateBuilder::setIscancellable, ratePlan.getTPAExtensions().getNonRefundable().equals(FALSE));
+            safeSetProtoField(rateBuilder::setIsBreakfastIncluded, ratePlan.getTPAExtensions().getBreakfastIncluded().equals(TRUE));
+            safeSetProtoField(rateBuilder::setIsCancellable, ratePlan.getTPAExtensions().getNonRefundable().equals(FALSE));
 
         }
         return rateBuilder.build();

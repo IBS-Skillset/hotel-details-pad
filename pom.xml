@@ -85,9 +85,9 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>com.traveldoo.supplier</groupId>
+			<groupId>com.happyStays.supplier</groupId>
 			<artifactId>djoca-ws</artifactId>
-			<version>1.12</version>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.devh</groupId>

@@ -150,6 +150,7 @@
 	</dependencyManagement>
 
 	<build>
+		<finalName>hotel-details-pad</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

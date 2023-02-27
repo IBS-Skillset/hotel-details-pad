@@ -6,11 +6,8 @@ phases:
       java: corretto11
   pre_build:
     commands:
+      - mvn clean install
       - echo Logging in to Amazon ECR...
-      - echo $AWS_DEFAULT_REGION
-      - echo $AWS_ACCOUNT_ID
-      - echo $CODEBUILD_RESOLVED_SOURCE_VERSION
-      - echo $IMAGE_REPO_NAME
       - aws --version
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME/hotel-details-pad
@@ -19,9 +16,7 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - mvn install
       - echo Building the Docker image...
-      - echo $REPOSITORY_URI
       - docker build -t $REPOSITORY_URI:latest .
       - echo Tagging Docker image...  #The tag in Docker is useful to maintain the version of the build to push the image to the DockerHub
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG

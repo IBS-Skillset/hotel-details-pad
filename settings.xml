@@ -6,5 +6,10 @@
             <username>aws</username>
             <password>${env.CODEARTIFACT_AUTH_TOKEN}</password>
         </server>
+        <server>
+            <id>ibsplc-djoca-ws</id>
+            <username>aws</username>
+            <password>${env.CODEARTIFACT_AUTH_TOKEN_DJOCA}</password>
+        </server>
     </servers>
 </settings>

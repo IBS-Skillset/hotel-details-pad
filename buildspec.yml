@@ -6,8 +6,8 @@ phases:
       java: corretto11
   pre_build:
     commands:
-      - export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain ibsplc --domain-owner ${AWS_ACCOUNT_ID} --region ${AWS_DEFAULT_REGION} --query authorizationToken --output text`
-      - export CODEARTIFACT_AUTH_TOKEN_DJOCA=`aws codeartifact get-authorization-token --domain ibsplc --domain-owner ${AWS_ACCOUNT_ID} --region ${AWS_DEFAULT_REGION} --query authorizationToken --output text`
+      - export HOTEL_SERVICE_CONTRACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain ibsplc --domain-owner ${AWS_ACCOUNT_ID} --region ${AWS_DEFAULT_REGION} --query authorizationToken --output text`
+      - export DJOCA_WS_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain ibsplc --domain-owner ${AWS_ACCOUNT_ID} --region ${AWS_DEFAULT_REGION} --query authorizationToken --output text`
       - mvn -s settings.xml clean install
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com

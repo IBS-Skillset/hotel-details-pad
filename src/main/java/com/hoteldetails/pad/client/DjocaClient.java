@@ -37,7 +37,7 @@ public class DjocaClient {
             return unmarshaller.unmarshal(new StringReader(responseEntity.getBody()));
         }
         catch (JAXBException b){
-            log.info("JAXBException caught " + b);
+            log.info("JAXBException caughtt " + b);
             throw new HotelException(b.getMessage(), ApiConstants.SUPPLIER_SERVER_ERROR);
         }
         catch (Exception e)

@@ -1,0 +1,37 @@
+version: 0.2
+env:
+  variables:
+    PAT: "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"
+phases:
+  install:
+    runtime-versions:
+      java: corretto11
+    commands:
+      - yum update -y
+      - yum install yum-utils -y
+      - yum-config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo -y
+      - yum install gh -y
+  pre_build:
+    commands:
+      - export HOTEL_SERVICE_CONTRACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain ibsplc --domain-owner ${AWS_ACCOUNT_ID} --region ${AWS_DEFAULT_REGION} --query authorizationToken --output text`
+      - export DJOCA_WS_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain ibsplc --domain-owner ${AWS_ACCOUNT_ID} --region ${AWS_DEFAULT_REGION} --query authorizationToken --output text`
+      - mvn -s settings.xml clean install
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Running tests
+      - mvn test; EXITCODE=$?
+      - echo "$EXITCODE"
+      - echo "$CODEBUILD_WEBHOOK_TRIGGER"
+      - TAG=$(echo $CODEBUILD_WEBHOOK_TRIGGER | tail -c 3)
+      - echo $TAG
+      - echo $PAT
+      - gh auth login --hostname github.com --with-token <<< $PAT
+      - |
+        if [ "$EXITCODE" = "0" ]; then
+          gh pr merge $TAG --admin --merge
+        else
+          gh pr comment $TAG --body "The tests have failed. Please check the logs and fix the issues."
+        fi

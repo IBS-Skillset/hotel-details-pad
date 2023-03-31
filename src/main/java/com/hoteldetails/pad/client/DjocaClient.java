@@ -42,7 +42,7 @@ public class DjocaClient {
         }
         catch (Exception e)
         {
-            log.info("Exception occurred in request-response to Djoca " + e);
+            log.info("Exception occured in request-response to Djoca " + e);
             throw new HotelException(e.getMessage(), ApiConstants.SUPPLIER_SERVER_ERROR);
         }
     }

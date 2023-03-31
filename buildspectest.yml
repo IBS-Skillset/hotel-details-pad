@@ -1,7 +1,7 @@
 version: 0.2
 env:
   variables:
-    PAT: "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"
+    PAT: "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"
 phases:
   install:
     runtime-versions:

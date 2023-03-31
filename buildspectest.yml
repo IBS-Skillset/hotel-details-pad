@@ -1,7 +1,7 @@
 version: 0.2
 env:
   variables:
-    PAT: "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"
+    PAT: "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"
 phases:
   install:
     runtime-versions:

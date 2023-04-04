@@ -1,7 +1,7 @@
 version: 0.2
 env:
-  variables:
-    PAT: "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"
+  parameter-store:
+    SECRET_TOKEN: "MY_SECRET_TOKEN"
 phases:
   install:
     runtime-versions:
@@ -23,12 +23,13 @@ phases:
       - echo Build started on `date`
       - echo Running tests
       - mvn test; EXITCODE=$?
+      - echo $SECRET_TOKEN
       - echo "$EXITCODE"
       - echo "$CODEBUILD_WEBHOOK_TRIGGER"
-      - TAG=$(echo $CODEBUILD_WEBHOOK_TRIGGER | tail -c 3)
+      - TAG=$(echo $CODEBUILD_WEBHOOK_TRIGGER | sed -r 's/^.{3}//')
       - echo $TAG
       - echo $PAT
-      - gh auth login --hostname github.com --with-token <<< $PAT
+      - gh auth login --hostname github.com --with-token <<< $SECRET_TOKEN
       - |
         if [ "$EXITCODE" = "0" ]; then
           gh pr merge $TAG --admin --merge

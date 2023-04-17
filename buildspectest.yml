@@ -28,7 +28,6 @@ phases:
       - echo "$CODEBUILD_WEBHOOK_TRIGGER"
       - TAG=$(echo $CODEBUILD_WEBHOOK_TRIGGER | sed -r 's/^.{3}//')
       - echo $TAG
-      - echo $PAT
       - gh auth login --hostname github.com --with-token <<< $SECRET_TOKEN
       - |
         if [ "$EXITCODE" = "0" ]; then

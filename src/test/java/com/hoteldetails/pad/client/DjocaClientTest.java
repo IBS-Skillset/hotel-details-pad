@@ -38,7 +38,6 @@ public class DjocaClientTest {
 
     @Test
     public void restClient() throws JAXBException {
-
         JAXBContext context = DjocaEndpointFactory.context;
         final StringWriter requestWriter = new StringWriter();
         Marshaller marshaller = context.createMarshaller();

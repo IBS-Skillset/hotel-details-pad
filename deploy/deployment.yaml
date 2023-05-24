@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: hotel-details-pad-api
-          image: 306472407007.dkr.ecr.ap-south-1.amazonaws.com/ibs-skillset-happystays/hotel-details-pad:573890b
+          image: 306472407007.dkr.ecr.ap-south-1.amazonaws.com/ibs-skillset-happystays/hotel-details-pad:2ac4fbe
           imagePullPolicy: Always
           ports:
             - name: http
